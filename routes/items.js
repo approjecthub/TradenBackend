@@ -3,6 +3,7 @@ const router = express.Router();
 const Item = require('../models/item');
 const multer = require('multer')
 const path = require('path')
+var ObjectID = require('mongodb').ObjectID;
 
 const MIME_type_mp = {
     'image/png':'png',
@@ -86,17 +87,18 @@ router.put('/:id',multer({storage:storage}).single('image'), async(req,res)=>{
     }
 
     const item = new Item({
-        _id:req.body.id,
+        _id:ObjectID(req.params.id),
         category:req.body.category,
         creditPrice:req.body.creditPrice,
         cashPrice:req.body.cashPrice,
         description:req.body.description,
         imagePath:imgurl,
     })
-    
-    Item.updateOne({_id: req.body.id}, item)
+
+    Item.updateOne({_id: ObjectID(req.params.id)}, item)
     .then(result =>{
-        console.log(result.nModified)
+        
+        if(result.nModified==0) return res.status(500).json({msg:"upadte was not successfull"})
         res.status(200).json({msg:'updated successfully'})
     })
     .catch(err=>{
