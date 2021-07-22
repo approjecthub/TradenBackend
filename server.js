@@ -27,4 +27,7 @@ app.use(express.static('./public'))
 
 const itemsRouter = require('./routes/items');
 app.use('/items', itemsRouter)
+const sellRouter = require('./routes/sellReq');
+app.use('/sell', sellRouter)
+
 app.listen(3000, ()=>console.log('Server Started'));
